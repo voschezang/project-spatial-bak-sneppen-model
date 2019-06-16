@@ -1,0 +1,2 @@
+default:
+	jupyter notebook
