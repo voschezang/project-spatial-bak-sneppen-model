@@ -17,7 +17,11 @@ Dit zorgt ervoor dat species die naar een locatie reizen waar geen depenencies z
 
 # 3) Het verspreiden van species
 ## a
-Als een species niet aanwezig is in een connected node, dan gaat de species er naartoe met een probability `p_spread`. `p_spread` kan worden opgevat als een frequentie, waardoor `1/p_spread` de tijd is die een species nodig heeft om naar een andere node te reizen. Dus dat zou kunnen worden ingesteld op `p_spread = 1/(travel_time * dt)`. In principe zou `p_spread = 1/dt` ook kunnen (bv als `dt = 100 jaar`, dat scheelt weer een param).
+Als een species niet aanwezig is in een connected node, dan gaat de species er naartoe met een probability `p_spread`. `p_spread` kan worden opgevat als een frequentie, waardoor `1/p_spread` de tijd is die een species nodig heeft om naar een andere node te reizen. Dus dat zou kunnen worden ingesteld op 
+```python
+p_spread = 1/(travel_time * dt).
+```
+In principe zou `p_spread = 1/dt` ook kunnen (bv als `dt = 100 jaar`, dat scheelt weer een param).
 
 p_spread << 1, anders dan zal de localiteit verloren gaan. (dit betekent dat de parameter ook niet weggelaten kan worden)
 
