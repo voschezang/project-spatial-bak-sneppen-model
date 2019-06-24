@@ -183,6 +183,7 @@ class Lattice:
                 if log:
                     ax.set_xscale("log")
                     ax.set_yscale("log")
+                plt.margins(0)
 
         print("power: {}, MSE: {}".format(round(power[0][0], 3), res))
         return power[0][0], res
