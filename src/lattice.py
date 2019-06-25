@@ -1,3 +1,28 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import networkx as nx
+import collections
+from src.bs import Avalanches, BS
+
+
+def interpolate(a=[], b=[], amt=0.5):
+    """ Linear interpolation for each dimension i in a,b
+    a,b: array-like or float
+    """
+    return (1 - amt) * a + amt * b
+
+
+class Iterator:
+    # Generate species identifiers (index values/keys)
+    def __init__(self, start=0):
+        self._next = start
+
+    def get_next(self):
+        # Return next identifier value and update internal state
+        self._next += 1
+        return self._next - 1
+
+
 class Lattice:
     def __init__(self, dimensions, N, network, P, fitness_correlation=1, migration_bias=1):
         """
@@ -24,8 +49,8 @@ class Lattice:
         self.av_local = Avalanches()
         # create BS network in each point of the lattice
         for (i, point) in enumerate(self.lattice):
-            self.lattice.node[point]["BS"] = BS(N, network, species_ids=range(N*i, N*(i+1)), fitnesses=None)
-
+            self.lattice.node[point]["BS"] = BS(
+                N, network, species_ids=range(N * i, N * (i + 1)), fitnesses=None)
 
     def __getitem__(self, i):
         return self.lattice.node[i]["BS"]
@@ -36,11 +61,11 @@ class Lattice:
 
     def run(self, t_max: int, collect_data=False):
         if collect_data:
-            self.data = np.empty((t_max+1,) + self.dimensions, dtype=object)
-            for i,j in np.ndindex(self.dimensions):
+            self.data = np.empty((t_max + 1,) + self.dimensions, dtype=object)
+            for i, j in np.ndindex(self.dimensions):
                 self.data[0, i, j] = set(self[i, j].species_list)
 
-        for t in range(1, t_max+1):
+        for t in range(1, t_max + 1):
             self.run_step(t, collect_data)
 
     def run_step(self, t, collect_data):
@@ -48,8 +73,8 @@ class Lattice:
         global_fitness = 1
         for i, j in np.random.permutation(self.lattice):
             # select node with lowest fitness
-            bs = self[i,j]
-            lattice_neighbours = list(self.lattice[i,j])
+            bs = self[i, j]
+            lattice_neighbours = list(self.lattice[i, j])
             idx, fitness = bs.min_fitness()
             node_indices = [idx] + list(bs.g[idx])
             # count local avalanches
@@ -74,7 +99,8 @@ class Lattice:
 
     def migrate(self, bs, node_id, lattice_neighbours=[]):
         # select a random neighbour as migration source
-        bs_source = self[lattice_neighbours[np.random.randint(0, len(lattice_neighbours))]]
+        bs_source = self[lattice_neighbours[np.random.randint(
+            0, len(lattice_neighbours))]]
         source_nodes = bs_source.g
         if self.migration_bias != 0:
             nodes = bs_source.g.nodes
@@ -89,7 +115,7 @@ class Lattice:
             source_nodes = np.random.permutation(source_nodes)
 
         # use dummy dict to optimize lookup
-        target_species_ids = {k[1]:None for k in bs.species}
+        target_species_ids = {k[1]: None for k in bs.species}
         # iterate randomly over selection
         for source_node_id in source_nodes:
             species_id = bs_source[source_node_id]["id"]
@@ -98,11 +124,12 @@ class Lattice:
                 # migrate and stop searching
                 fitness_new = interpolate(bs_source[source_node_id]["fitness"],
                                           np.random.random(),
-                                          amt=1-self.fitness_correlation)
+                                          amt=1 - self.fitness_correlation)
                 bs.update(node_id, species_id, fitness=fitness_new)
                 return
 
-        print("Migration failed from {} to {}".format(bs_source.species, bs.species))
+        print("Migration failed from {} to {}".format(
+            bs_source.species, bs.species))
         self.mutate(bs, node_id)
 
     def draw(self):
@@ -129,54 +156,58 @@ class Lattice:
     def area_curve(self, sampling_scheme='quadrats', log=True, plot_bool=True, v=0):
         # sampling_scheme = ['nested'|'quadrats']
         if sampling_scheme == 'nested':
-            area_curve = np.empty((self.dimensions[0],2))
-            for s in range(1, self.dimensions[0]+1):
+            area_curve = np.empty((self.dimensions[0], 2))
+            for s in range(1, self.dimensions[0] + 1):
                 species = set()
                 for i in range(0, s):
                     for j in range(0, s):
-                        species = species.union(self[(i,j)].species_list)
+                        species = species.union(self[(i, j)].species_list)
 
                 nr = len(species)
-                area_curve[s-1] = (s**2, nr)
+                area_curve[s - 1] = (s**2, nr)
             print(area_curve)
             ax.plot(*area_curve.T, "o")
 
-            power = (np.log10(area_curve[-1,1]) - np.log10(area_curve[0,1])) / (np.log10(self.dimensions[0]**2) - np.log10(1))
-
+            power = (np.log10(area_curve[-1, 1]) - np.log10(area_curve[0, 1])) / (
+                np.log10(self.dimensions[0]**2) - np.log10(1))
 
         elif sampling_scheme == 'quadrats':
             area_curve = collections.OrderedDict()
             sd = []
-            for grain_size in range(1, max(self.dimensions)+1):
+            for grain_size in range(1, max(self.dimensions) + 1):
                 assert self.dimensions[0] == self.dimensions[1]
                 means = []
                 i = 0
-                for interval_i in range(0, self.dimensions[0]-grain_size+1):
-                    for interval_j in range(0, self.dimensions[1]-grain_size+1):
+                for interval_i in range(0, self.dimensions[0] - grain_size + 1):
+                    for interval_j in range(0, self.dimensions[1] - grain_size + 1):
                         species = set()
-                        for i,j in np.ndindex((grain_size,grain_size)):
+                        for i, j in np.ndindex((grain_size, grain_size)):
                             ii = interval_i + i
                             jj = interval_j + j
-                            species = species.union(self[ii,jj].species_list)
+                            species = species.union(self[ii, jj].species_list)
                             i += 1
 
                         means.append(len(species))
 
                 area_curve[grain_size**2] = np.mean(means)
-                sd.append(np.std(means)*1.96/np.sqrt(i))
+                sd.append(np.std(means) * 1.96 / np.sqrt(i))
                 if plot_bool and v > 0:
-                    print('grain size: %i, mean: %0.3f'% (grain_size, np.mean(means)))
+                    print('grain size: %i, mean: %0.3f' %
+                          (grain_size, np.mean(means)))
 
             X = np.log10(np.array([list(area_curve.keys())])).T[2:]
-            y = (np.log10(np.array([list(area_curve.values())])).T - np.log10(self.N_species))[2:]
-            power, res = np.linalg.lstsq(X,y)[0:2]
+            y = (np.log10(
+                np.array([list(area_curve.values())])).T - np.log10(self.N_species))[2:]
+            power, res = np.linalg.lstsq(X, y)[0:2]
             res = np.mean(res)
 
             if plot_bool:
                 fig, ax = plt.subplots()
-                ax.errorbar(list(area_curve.keys()), list(area_curve.values()), yerr=sd, fmt="x", capsize=2)
+                ax.errorbar(list(area_curve.keys()), list(
+                    area_curve.values()), yerr=sd, fmt="x", capsize=2)
                 ax.plot()
-                ax.plot(list(area_curve.keys()), (self.N_species * np.array(list(area_curve.keys()))**power)[0], color='red', linestyle='dashed')
+                ax.plot(list(area_curve.keys()), (self.N_species * np.array(
+                    list(area_curve.keys()))**power)[0], color='red', linestyle='dashed')
                 ax.set_xlabel("Area")
                 ax.set_ylabel("Number of species")
 
@@ -192,20 +223,21 @@ class Lattice:
         # Compute mean, std number of species per area using "quadrats" sampling scheme
         means = []
         i = 0
-        for interval_i in range(0, self.dimensions[0]-grain_size+1):
-            for interval_j in range(0, self.dimensions[1]-grain_size+1):
+        for interval_i in range(0, self.dimensions[0] - grain_size + 1):
+            for interval_j in range(0, self.dimensions[1] - grain_size + 1):
                 unique_species = set()
-                for i,j in np.ndindex((grain_size,grain_size)):
+                for i, j in np.ndindex((grain_size, grain_size)):
                     ii = interval_i + i
                     jj = interval_j + j
                     if species is None:
-                        unique_species = unique_species.union(self[ii,jj].species_list)
+                        unique_species = unique_species.union(
+                            self[ii, jj].species_list)
                     else:
-                        unique_species = unique_species.union(species[ii,jj])
+                        unique_species = unique_species.union(species[ii, jj])
                     i += 1
 
                 means.append(len(unique_species))
 
         mean = np.mean(means)
-        std = np.std(means)*1.96/np.sqrt(i)
+        std = np.std(means) * 1.96 / np.sqrt(i)
         return mean, std

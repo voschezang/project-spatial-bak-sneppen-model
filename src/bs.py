@@ -1,3 +1,23 @@
+import numpy as np
+import networkx as nx
+
+
+class Avalanches:
+    # Data collector
+    def __init__(self):
+        self.trace = []
+        self.min_fitness = 1
+        self.size = -1
+
+    def update(self, t, fitness):
+        if t > 2 and fitness < self.min_fitness:
+            self.size += 1
+        else:
+            self.trace.append(self.size)
+            self.min_fitness = fitness
+            self.size = 1
+
+
 class BS:
     def __init__(self, N, network, random_relations=False, species_ids=None, fitnesses=None):
         """ Bak-Sneppen Model
@@ -24,7 +44,6 @@ class BS:
         else:
             raise ValueError("Unknown network type")
 
-
     def update(self, node_id, new_species_id, fitness=None):
         if fitness is None:
             fitness = np.random.random()
@@ -44,13 +63,13 @@ class BS:
 
     @property
     def species_list(self):
-        return [i for _,i in self.species]
+        return [i for _, i in self.species]
 
     def fitness(self):
         return self.g.nodes.data("fitness")
 
     def fitness_array(self):
-        return np.array([f for _,f in self.fitness()])
+        return np.array([f for _, f in self.fitness()])
 
     def min_fitness(self):
         return min(self.fitness(), key=lambda x: x[1])
