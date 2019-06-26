@@ -32,7 +32,7 @@ class Lattice:
             fail -> migration (replacement by a species originating from neighbourhood)
         fitness_correlation: float in [0,1]
             Parameter that controls fitness after migration.
-            Low values maintain the previous fitness and high values randomize the fitness.
+            High values maintain the previous fitness and low values randomize the fitness.
         migration_bias: float in [-1,1]
             Parameter to controll the influence of fitness on migration. Set to zero to disable the influence.
         """
