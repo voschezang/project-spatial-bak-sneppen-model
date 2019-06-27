@@ -82,7 +82,12 @@ These can grow system wide (i.e. O(1) perturbations can have O(N) effects)
 
 ## 2D image of avalanches
 
-<img src="results/av.png">
+The parameter `migration priority` has a strong effect on convergence after initialization and on the critical (i.e. average) fitness.
+
+
+<img src="results/av.png" width="450">
+
+<img src="results/av-cb.png" width="300">
 
 ---
 
