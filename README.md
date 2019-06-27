@@ -30,16 +30,6 @@ This video shows the effect of this parameter on the spreading of species over t
 
 
 
-<iframe width="560" height="315" src="https://voschezang.github.io/Scientific-Computing-Models/img/bak-sneppen/spreading.mp4"
-></iframe>
-
-    <video loop autoplay width="420">
-      <source src="https://voschezang.github.io/Scientific-Computing-Models/img/bak-sneppen/spreading.mp4" type="video/mp4">
-spreading.mp4
-</video>
-
-
-
 ---
 
 
