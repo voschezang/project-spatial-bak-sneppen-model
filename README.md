@@ -2,6 +2,8 @@ https://drive.google.com/drive/folders/1xsb4LDZyvB3mq3BZRNv-lw3JBmH0Y0Qy
 
 # Spatial extention of Bak-Sneppen model
 
+<img src="results/migration_of_species.gif"  width="600">
+
 By: Ruud Sperna Weiland, Mark Voschezang, Wouter Meering. Freek van den Honert, Thomas Start
 
 ## Original model
@@ -27,6 +29,8 @@ This controls the speed at which the relative (local) fitness of species can cha
 - `migration prioriy: least fit | random | fittest`
 
 This video shows the effect of this parameter on the spreading of species over the lattice.
+
+<img src="results/spreading.gif"  width="700">
 
 
 
