@@ -15,13 +15,22 @@ This model exhibit patterns similar to the [species-area curve](https://en.wikip
 <img src="results/species-area.png"  width="600">
 
 
+## 2D image of avalanches
+
+<img src="results/av.png">
+
+
 ## Fit of power law on avalache size
 
 <img src="results/av-size.png" width="450">
 
-## 2D image of avalanches
 
-<img src="results/av.png">
+## Effect of parameters on power law slope
+
+The effect of the parameters `fitness-migration correlation` and `migration bias` on the power law slope of the avalanche size.
+
+<img src="results/param-tuning.png" width="450">
+
 
 
 ## Habitat size
