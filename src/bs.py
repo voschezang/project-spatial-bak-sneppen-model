@@ -58,7 +58,6 @@ class BS:
             fitness = np.random.random()
         self[node_id]["fitness"] = fitness
         self[node_id]["id"] = new_species_id
-        self.avalanches.update(fitness)
 
     @property
     def N(self):

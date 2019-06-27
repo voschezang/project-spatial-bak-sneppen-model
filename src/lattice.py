@@ -80,6 +80,8 @@ class Lattice:
             idx, fitness = bs.min_fitness()
             node_indices = [idx] + list(bs.g[idx])
 
+            bs.avalanches.update(fitness)
+
             # apply mutation-migration step for each node
             for node_id in node_indices:
                 if np.random.random() < self.P:
