@@ -12,12 +12,12 @@ Wiki: [Bak-Sneppen](https://en.wikipedia.org/wiki/Bak%E2%80%93Sneppen_model)
 
 This model exhibit patterns similar to the [species-area curve](https://en.wikipedia.org/wiki/Species%E2%80%93area_relationship), with comparable power law slopes as observed in nature.
 
-<img src="results/species-area.png">
+<img src="results/species-area.png"  width="500">
 
 
 ## Fit of power law on avalache size
 
-<img src="results/av-size.png>
+<img src="results/av-size.png width="500">
 
 ## 2D image of avalanches
 
@@ -26,5 +26,5 @@ This model exhibit patterns similar to the [species-area curve](https://en.wikip
 
 ## Habitat size
 
-<img src="results/hist-area.png">
+<img src="results/hist-area.png" width="300">
 
