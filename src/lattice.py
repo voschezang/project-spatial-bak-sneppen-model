@@ -188,18 +188,19 @@ class Lattice:
 
         if plot_bool:
             if ax is None:
-                ax.errorbar(list(area_curve.keys()), list(
-                    area_curve.values()), yerr=sd, fmt="x", capsize=2)
-                ax.plot()
-                ax.plot(list(area_curve.keys()), (self.N_species * np.array(
-                    list(area_curve.keys()))**power)[0], color='red', linestyle='dashed')
-                ax.set_xlabel("Area")
-                ax.set_ylabel("Number of species")
+                fig, ax = plt.subplots()
+            ax.errorbar(list(area_curve.keys()), list(
+                area_curve.values()), yerr=sd, fmt="x", capsize=2)
+            ax.plot()
+            ax.plot(list(area_curve.keys()), (self.N_species * np.array(
+                list(area_curve.keys()))**power)[0], color='red', linestyle='dashed')
+            ax.set_xlabel("Area")
+            ax.set_ylabel("Number of species")
 
-                if log:
-                    ax.set_xscale("log")
-                    ax.set_yscale("log")
-                plt.margins(0)
+            if log:
+                ax.set_xscale("log")
+                ax.set_yscale("log")
+            plt.margins(0)
 
         print("power: {}, MSE: {}".format(round(power[0][0], 3), res))
         return power[0][0], res
