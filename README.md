@@ -28,7 +28,7 @@ This controls the speed at which the relative (local) fitness of species can cha
 
 This video shows the effect of this parameter on the spreading of species over the lattice.
 
-<img src="results/spreading.gif"  width="700">
+<img src="results/spreading.gif"  width="800">
 
 
 
