@@ -30,9 +30,22 @@ This video shows the effect of this parameter on the spreading of species over t
 
 <img src="results/spreading.gif"  width="800">
 
+---
+
+
+# Codebase
+
+The [jupyter](https://jupyter.org/) notebook `Experiments.ipynb` contains a number of experiments and can be viewed [online](https://github.com/voschezang/Spatial-Bak-Sneppen/blob/master/Experiments.ipynb).
+
+The major classes are `Lattice` and `BS` which represent the lattice and Bak-Sneppen models, respectively. They are located in the directory `src`. 
+
+The directory `results` contains some images and videos, which are displayed below.
+
 
 
 ---
+
+
 # Fitness distribution
 
 <img src="results/fitness distribution.gif"  width="400">
