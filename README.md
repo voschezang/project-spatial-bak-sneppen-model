@@ -21,10 +21,18 @@ Several parameters are introduced to control this behaviour:
 The probability of *mutation*. The probability of *migration* is thus (1-P).
 Lower values allow species to spread out more.
 
-- `migration prioriy: least fit | random | fittest`
-
 - `fitness-migration correlation: float in [0,1]`
 This controls the speed at which the relative (local) fitness of species can change during migration. 
+
+- `migration prioriy: least fit | random | fittest`
+
+This video shows the effect of this parameter on the spreading of species over the lattice.
+
+
+<iframe width="560" height="315" src="https://voschezang.github.io/Scientific-Computing-Models/img/bak-sneppen/spreading.mp4"
+frameborder="0" allowfullscreen></iframe>
+
+
 
 
 ---
