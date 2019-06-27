@@ -35,7 +35,7 @@ This video shows the effect of this parameter on the spreading of species over t
 ---
 # Fitness distribution
 
-<img src="results/fitness distribution.gif"  width="600">
+<img src="results/fitness distribution.gif"  width="400">
 
 # Species-area curve
 
