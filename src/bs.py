@@ -59,7 +59,6 @@ class BS:
         self[node_id]["fitness"] = fitness
         self[node_id]["id"] = new_species_id
         self.avalanches.update(fitness)
-        return fitness
 
     @property
     def N(self):
