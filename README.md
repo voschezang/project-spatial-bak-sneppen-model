@@ -30,6 +30,8 @@ This video shows the effect of this parameter on the spreading of species over t
 
 <img src="results/spreading.gif"  width="800">
 
+<br>
+
 ---
 
 
@@ -41,7 +43,7 @@ The major classes are `Lattice` and `BS` which represent the lattice and Bak-Sne
 
 The directory `results` contains some images and videos, which are displayed below.
 
-
+<br>
 
 ---
 
