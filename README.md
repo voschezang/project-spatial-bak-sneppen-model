@@ -17,7 +17,7 @@ This model exhibit patterns similar to the [species-area curve](https://en.wikip
 
 ## Fit of power law on avalache size
 
-<img src="results/av-size.png" width="600">
+<img src="results/av-size.png" width="450">
 
 ## 2D image of avalanches
 
@@ -26,5 +26,5 @@ This model exhibit patterns similar to the [species-area curve](https://en.wikip
 
 ## Habitat size
 
-<img src="results/hist-area.png" width="300">
+<img src="results/hist-area.png" width="400">
 
