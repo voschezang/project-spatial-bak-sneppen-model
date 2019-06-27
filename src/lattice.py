@@ -48,8 +48,7 @@ class Lattice:
         self.migration_bias = migration_bias
         # create lattice
         self.lattice = nx.grid_graph(list(dimensions), periodic=True)
-        self.av = Avalanches()
-        self.av_local = Avalanches()
+        self.avalanches = Avalanches()
         # create BS network in each point of the lattice
         for (i, point) in enumerate(self.lattice):
             self.lattice.node[point]["BS"] = BS(
@@ -80,9 +79,6 @@ class Lattice:
             lattice_neighbours = list(self.lattice[i, j])
             idx, fitness = bs.min_fitness()
             node_indices = [idx] + list(bs.g[idx])
-            # count local avalanches
-            if i == 0 and j == 0:
-                self.av_local.update(t, fitness)
 
             # apply mutation-migration step for each node
             for node_id in node_indices:
@@ -95,7 +91,8 @@ class Lattice:
                 self.data[t, i, j] = set(bs.species_list)
 
             global_fitness = min(fitness, global_fitness)
-        self.av.update(t, fitness)
+        if t > 2:
+            self.avalanches.update(fitness)
 
     def mutate(self, bs, node_id):
         bs.update(node_id, self.identifier_iter.get_next())
@@ -156,6 +153,8 @@ class Lattice:
         return [self[point].fitness_array().mean() for point in self.lattice]
 
     def area_curve(self, log=True, plot_bool=True, ax=None, v=0):
+        """ Compute and plot the species-area curve
+        """
         area_curve = collections.OrderedDict()
         sd = []
         for grain_size in range(1, max(self.dimensions) + 1):
@@ -174,10 +173,11 @@ class Lattice:
                     means.append(len(species))
 
             area_curve[grain_size**2] = np.mean(means)
+
             sd.append(np.std(means) * 1.96 / np.sqrt(i))
             if plot_bool and v > 0:
                 print('grain size: %i, mean: %0.3f' %
-                        (grain_size, np.mean(means)))
+                      (grain_size, np.mean(means)))
 
         X = np.log10(np.array([list(area_curve.keys())])).T[2:]
         y = (np.log10(
