@@ -5,17 +5,25 @@ import networkx as nx
 class Avalanches:
     # Data collector
     def __init__(self):
-        self.trace = []
-        self.min_fitness = 1
+        self._trace = []
+        self.time_trace = [0]
+        self.min_fitness = 0
         self.size = -1
 
-    def update(self, t, fitness):
-        if t > 2 and fitness < self.min_fitness:
+    def update(self, fitness):
+        if fitness < self.min_fitness:
             self.size += 1
+            self.time_trace[-1] += 1
         else:
-            self.trace.append(self.size)
+            self._trace.append(self.size)
+            self.time_trace.append(0)
             self.min_fitness = fitness
             self.size = 1
+
+    @property
+    def trace(self):
+        # never return the first element
+        return self._trace[1:]
 
 
 class BS:
@@ -25,6 +33,7 @@ class BS:
         network: type of graph
         """
         self.network = network
+        self.avalanches = Avalanches()
         # create graph
         if network[0] == "watts-strogatz":
             (_, k, p) = network
@@ -49,6 +58,8 @@ class BS:
             fitness = np.random.random()
         self[node_id]["fitness"] = fitness
         self[node_id]["id"] = new_species_id
+        self.avalanches.update(fitness)
+        return fitness
 
     @property
     def N(self):

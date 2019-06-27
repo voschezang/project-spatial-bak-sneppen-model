@@ -45,8 +45,7 @@ class Lattice:
         self.migration_bias = migration_bias
         # create lattice
         self.lattice = nx.grid_graph(list(dimensions), periodic=True)
-        self.av = Avalanches()
-        self.av_local = Avalanches()
+        self.avalanches = Avalanches()
         # create BS network in each point of the lattice
         for (i, point) in enumerate(self.lattice):
             self.lattice.node[point]["BS"] = BS(
@@ -61,11 +60,16 @@ class Lattice:
 
     def run(self, t_max: int, collect_data=False):
         if collect_data:
+            self.fitnesses = np.empty((t_max + 1, np.prod(self.dimensions)))
+            # self.fitnesses = scipy.sparse.bsr_matrix(
+            #     (t_max + 1, np.prod(self.dimensions)))
             self.data = np.empty((t_max + 1,) + self.dimensions, dtype=object)
             for i, j in np.ndindex(self.dimensions):
                 self.data[0, i, j] = set(self[i, j].species_list)
 
         for t in range(1, t_max + 1):
+            # if collect_data:
+            #     self.fitnesses[t, :, :] = self.fitnesses[t - 1]
             self.run_step(t, collect_data)
 
     def run_step(self, t, collect_data):
@@ -77,27 +81,28 @@ class Lattice:
             lattice_neighbours = list(self.lattice[i, j])
             idx, fitness = bs.min_fitness()
             node_indices = [idx] + list(bs.g[idx])
-            # count local avalanches
-            if i == 0 and j == 0:
-                self.av_local.update(t, fitness)
 
             # apply mutation-migration step for each node
             for node_id in node_indices:
+                if collect_data:
+                    self.node_idx = [t, i, j]
                 if np.random.random() < self.P:
-                    self.mutate(bs, node_id)
+                    self.mutate(bs, node_id, collect_data)
                 else:
-                    self.migrate(bs, node_id, lattice_neighbours)
+                    self.migrate(bs, node_id, lattice_neighbours, collect_data)
 
             if collect_data:
                 self.data[t, i, j] = set(bs.species_list)
 
             global_fitness = min(fitness, global_fitness)
-        self.av.update(t, fitness)
+        if t > 2:
+            self.avalanches.update(fitness)
 
-    def mutate(self, bs, node_id):
-        bs.update(node_id, self.identifier_iter.get_next())
+    def mutate(self, bs, node_id, collect_data):
+        fitness = bs.update(node_id, self.identifier_iter.get_next())
+        self.update_fitnesses(fitness, collect_data)
 
-    def migrate(self, bs, node_id, lattice_neighbours=[]):
+    def migrate(self, bs, node_id, lattice_neighbours=[], collect_data=False):
         # select a random neighbour as migration source
         bs_source = self[lattice_neighbours[np.random.randint(
             0, len(lattice_neighbours))]]
@@ -126,11 +131,17 @@ class Lattice:
                                           np.random.random(),
                                           amt=1 - self.fitness_correlation)
                 bs.update(node_id, species_id, fitness=fitness_new)
+                self.update_fitnesses(fitness_new, collect_data)
                 return
 
         print("Migration failed from {} to {}".format(
             bs_source.species, bs.species))
         self.mutate(bs, node_id)
+
+    def update_fitnesses(self, fitness, collect_data):
+        if collect_data:
+            t, i, j = self.node_idx
+            self.fitnesses[t, i, j] = fitness
 
     def draw(self):
         nx.draw(self.lattice, with_labels=True)
@@ -198,7 +209,7 @@ class Lattice:
             X = np.log10(np.array([list(area_curve.keys())])).T[2:]
             y = (np.log10(
                 np.array([list(area_curve.values())])).T - np.log10(self.N_species))[2:]
-            power, res = np.linalg.lstsq(X, y)[0:2]
+            power, res = np.linalg.lstsq(X, y, rcond=-1)[0:2]
             res = np.mean(res)
 
             if plot_bool:
