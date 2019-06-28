@@ -22,7 +22,7 @@ The probability of *mutation*. The probability of *migration* is thus (1-P).
 Lower values allow species to spread out more.
 
 - `fitness-migration correlation: float in [0,1]`
-This controls the speed at which the relative (local) fitness of species can change during migration. 
+This controls the speed at which the relative (local) fitness of species can change during migration.
 
 - `migration prioriy: least fit | random | fittest`
 
@@ -37,9 +37,16 @@ This video shows the effect of this parameter on the spreading of species over t
 
 # Codebase
 
-The [jupyter](https://jupyter.org/) notebook `Experiments.ipynb` contains a number of experiments and can be viewed [online](https://github.com/voschezang/Spatial-Bak-Sneppen/blob/master/Experiments.ipynb).
+The [jupyter](https://jupyter.org/) notebook `Experiments.ipynb` contains a number of experiments and can be viewed [online](https://github.com/voschezang/Spatial-Bak-Sneppen/blob/master/Experiments.ipynb). First install dependencies.
+```
+pip3 install -r requirements.txt
+```
+Then start the jupyter server.
+```
+jupyter notebook
+```
 
-The major classes are `Lattice` and `BS` which represent the lattice and Bak-Sneppen models, respectively. They are located in the directory `src`. 
+The major classes are `Lattice` and `BS` which represent the lattice and Bak-Sneppen models, respectively. They are located in the directory `src`.
 
 The directory `results` contains some images and videos, which are displayed below.
 
@@ -71,7 +78,7 @@ The effect of the parameters `fitness-migration correlation` and `migration prio
 
 # Avalanches
 
-The model features both local and global avalanches. 
+The model features both local and global avalanches.
 
 These can grow system wide (i.e. O(1) perturbations can have O(N) effects)
 
@@ -95,4 +102,3 @@ The parameter `migration priority` has a strong effect on convergence after init
 ## Habitat size
 
 <img src="results/hist-area.png" width="400">
-
